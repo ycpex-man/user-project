@@ -1,13 +1,13 @@
-package org.example;
+package org.example.apigateway;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
-//localhost:port/swagger-ui/index.html#/ Запуск Swagger
 @SpringBootApplication
-public class UserServiceApplication {
+public class ApiGatewayApplication {
 
     public static void main(String[] args) {
-        SpringApplication.run(UserServiceApplication.class);
+        SpringApplication.run(ApiGatewayApplication.class, args);
     }
+
 }
