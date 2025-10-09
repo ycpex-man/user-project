@@ -8,9 +8,11 @@ import org.example.entity.User;
 import org.example.mappers.UserMapper;
 import org.example.repository.UserRepository;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -19,14 +21,18 @@ public class UserService {
 
     private final UserMapper userMapper;
     private final UserRepository repository;
+    private final KafkaProducerService kafkaProducerService;
 
     @CircuitBreaker(name = "userServiceCircuit", fallbackMethod = "fallbackCreateUser")
+    @Transactional
     public UserDto createUser(CreateUserRequest request) {
         if (repository.existsByEmail(request.email())) {
             throw new RuntimeException("Email уже существует");
         }
         User user = new User(request.name(), request.email(), request.age());
-        return userMapper.toDto(repository.save(user));
+        repository.save(user);
+        kafkaProducerService.sendUserEvent("CREATE", request.name(), request.email());
+        return userMapper.toDto(user);
     }
 
     @CircuitBreaker(name = "userServiceCircuit", fallbackMethod = "fallbackGetAll")
@@ -56,15 +62,17 @@ public class UserService {
     }
 
     @CircuitBreaker(name = "userServiceCircuit", fallbackMethod = "fallbackDelete")
+    @Transactional
     public void deleteUser(int id) {
+        Optional<User> user = repository.findById(id);
         repository.deleteById(id);
+        kafkaProducerService.sendUserEvent("DELETE", user.get().getName(), user.get().getEmail());
     }
 
     public UserDto fallbackCreateUser(CreateUserRequest request, Throwable throwable){
         System.out.println("Fallback : " + throwable.getMessage());
         return null;
     }
-
 
     public List<UserDto> fallbackGetAll(Throwable throwable){
         System.out.println("Fallback : " + throwable.getMessage());

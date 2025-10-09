@@ -25,7 +25,6 @@ import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 public class UserController {
 
     private final UserService userService;
-    private final KafkaProducerService kafkaProducerService;
 
     @Operation(summary = "Получить всех пользователей", description = "")
     @GetMapping
@@ -64,7 +63,6 @@ public class UserController {
         user.add(linkTo(methodOn(UserController.class).createUser(null)).withRel("create"));
         user.add(linkTo(methodOn(UserController.class).updateUser(user.getId(), null)).withRel("update"));
         user.add(linkTo(methodOn(UserController.class).deleteUser(user.getId())).withRel("delete"));
-        kafkaProducerService.sendUserEvent("CREATE", request.name(), request.email());
         return user;
     }
 
@@ -77,7 +75,6 @@ public class UserController {
         user.add(linkTo(methodOn(UserController.class).createUser(null)).withRel("create"));
         user.add(linkTo(methodOn(UserController.class).updateUser(user.getId(), null)).withRel("update"));
         user.add(linkTo(methodOn(UserController.class).deleteUser(user.getId())).withRel("delete"));
-
         return user;
     }
 
@@ -85,7 +82,6 @@ public class UserController {
     @DeleteMapping("/{id}")
     public UserDto deleteUser(@Parameter(description = "ID пользователя")@PathVariable int id) {
         UserDto user = userService.getUserById(id);
-        kafkaProducerService.sendUserEvent("DELETE", user.getName(), user.getEmail());
         userService.deleteUser(id);
         user.add(linkTo(methodOn(UserController.class).getAllUsers()).withRel("getAll"));
         user.add(linkTo(methodOn(UserController.class).createUser(null)).withRel("create"));
