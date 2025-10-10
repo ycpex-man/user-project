@@ -3,7 +3,6 @@ package org.example;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
-//localhost:port/swagger-ui/index.html#/ Запуск Swagger
 @SpringBootApplication
 public class UserServiceApplication {
 

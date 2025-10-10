@@ -7,7 +7,6 @@ import lombok.RequiredArgsConstructor;
 import org.example.dtos.CreateUserRequest;
 import org.example.dtos.UpdateUserEmailRequest;
 import org.example.dtos.UserDto;
-import org.example.service.KafkaProducerService;
 import org.example.service.UserService;
 import org.springframework.hateoas.CollectionModel;
 import org.springframework.web.bind.annotation.*;
@@ -16,7 +15,6 @@ import java.util.List;
 
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
-
 
 @Tag(name = "Users", description = "API для работы с пользователями")
 @RestController
