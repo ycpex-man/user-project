@@ -11,3 +11,9 @@
 /eureka-client/.gitattributes
 /eureka-client/mvnw
 /eureka-client/mvnw.cmd
+/user-service/src/main/resources/META-INF/MANIFEST.MF
+/user-service/src/main/resources/META-INF/
+/config-server/src/main/resources/META-INF/
+/eureka-server/src/main/resources/META-INF/
+/api-gateway/src/main/resources/META-INF/
+/.env
